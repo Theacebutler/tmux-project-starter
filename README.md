@@ -16,3 +16,4 @@ for a great workflow with tmux
 
   tmux
   nvim
+  z (zoxide)

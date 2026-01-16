@@ -4,15 +4,17 @@
 if [ -z "$1" ]; then
   echo "Error: Enter project root directory, starting project at: $(pwd)"
   # add option to start project in the current directory
-  # exit 1
+  exit 1
+else
+  PROJECT_HOME_DIR="$(zoxide query "$1" 2>/dev/null)"
+  cd "$PROJECT_HOME_DIR" || echo "cant find dir '$PROJECT_HOME_DIR'..."
 fi
 
 # cd to that directory
-project_path=$(pwd)
 project_name=$(pwd | awk -F/ '{print $(NF-1)"/"$NF}')
 
 # start a new tmux session, or attach to one if already exists
-tmux new-session -d -s "$project_name" -c "$project_path"
+tmux new-session -d -s "$project_name" -c "$PROJECT_HOME_DIR"
 
 # start a nvim editor window
 tmux rename-window -t "$project_name":0 'editor'
@@ -20,7 +22,7 @@ tmux send-keys -t "$project_name":editor "nvim" C-m
 
 # start a server window if package.json found
 if [[ -f "./package.json" ]]; then
-  tmux new-window -t "$project_name" -n 'server' -c "$project_path"
+  tmux new-window -t "$project_name" -n 'server' -c "$PROJECT_HOME_DIR"
   #   # handle a bun project
   if [[ -f "./bun.lock" ]]; then
     echo "Found a bun.lock file, starting a server with bun run dev..."
