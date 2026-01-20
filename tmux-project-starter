@@ -4,7 +4,6 @@
 if [ -z "$1" ]; then
   echo "Error: Enter project root directory, starting project at: $(pwd)"
   # add option to start project in the current directory
-  exit 1
 else
   PROJECT_HOME_DIR="$(zoxide query "$1" 2>/dev/null)"
   cd "$PROJECT_HOME_DIR" || echo "cant find dir '$PROJECT_HOME_DIR'..."
